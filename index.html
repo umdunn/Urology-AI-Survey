@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Urology Faculty AI Survey</title>
+<style>
+  :root {
+    --um-blue: #00274C;
+    --um-blue-2: #0a3a6b;
+    --um-maize: #FFCB05;
+    --um-maize-soft: #FFF1C8;
+    --bg: #F4F6F9;
+    --card: #FFFFFF;
+    --line: #D8DEE6;
+    --text: #1a2530;
+    --muted: #5b6b7b;
+    --green: #0a7a3d;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 16px; line-height: 1.45;
+  }
+
+  .draft-banner {
+    background: repeating-linear-gradient(45deg, #B3261E, #B3261E 14px, #8f1d17 14px, #8f1d17 28px);
+    color: #fff; text-align: center; font-weight: 700; letter-spacing: .04em;
+    padding: 9px 14px; font-size: 14px; position: sticky; top: 0; z-index: 50;
+  }
+
+  header {
+    background: var(--um-blue); color: #fff; padding: 26px 18px 22px;
+  }
+  .hwrap, main { max-width: 720px; margin: 0 auto; }
+  .brand { color: var(--um-maize); font-weight: 700; font-size: 13px;
+           letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
+  h1 { margin: 0 0 8px; font-size: 24px; line-height: 1.2; }
+  .lede { margin: 0; font-size: 15px; color: #cfd8e3; }
+  .lede b { color: #fff; }
+
+  main { padding: 18px 14px 60px; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px 16px 14px; margin-bottom: 14px;
+    box-shadow: 0 1px 2px rgba(16,32,48,.05);
+  }
+  .qnum {
+    display: inline-block; background: var(--um-blue); color: var(--um-maize);
+    font-weight: 700; font-size: 13px; border-radius: 6px; padding: 1px 8px;
+    margin-right: 8px; vertical-align: 2px;
+  }
+  .qtitle { font-size: 17px; font-weight: 700; color: var(--um-blue); margin: 0 0 2px; }
+  .qhint { font-size: 13.5px; color: var(--muted); margin: 0 0 10px; }
+  .req { color: #B3261E; font-weight: 700; }
+
+  .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .opts label {
+    display: flex; align-items: flex-start; gap: 9px;
+    border: 1.5px solid var(--line); border-radius: 10px;
+    padding: 10px 12px; cursor: pointer; user-select: none;
+    background: #fff; flex: 1 1 100%;
+    transition: background .12s, border-color .12s;
+  }
+  @media (min-width: 560px) { .opts.two label { flex: 1 1 calc(50% - 4px); } }
+  .opts.row label { flex: 0 1 auto; }
+  .opts label:hover { border-color: var(--um-blue-2); }
+  .opts label:has(input:checked) { background: var(--um-maize-soft); border-color: var(--um-blue); }
+  .opts input[type=checkbox], .opts input[type=radio] {
+    width: 20px; height: 20px; margin: 1px 0 0; flex: none; accent-color: var(--um-blue);
+  }
+  .opts .lbl { font-size: 15px; }
+  .otherline { display: flex; align-items: center; gap: 9px; }
+  input[type=text], textarea {
+    font: inherit; border: 1.5px solid var(--line); border-radius: 8px;
+    padding: 8px 10px; width: 100%; background: #fff; color: var(--text);
+  }
+  input[type=text]:focus, textarea:focus { outline: 2px solid var(--um-blue-2); border-color: var(--um-blue-2); }
+  .otherline input[type=text] { flex: 1; min-width: 0; }
+  textarea { min-height: 92px; resize: vertical; }
+
+  .subq {
+    margin-top: 12px; padding: 12px 12px 10px; border-left: 4px solid var(--um-maize);
+    background: #FAFBFC; border-radius: 0 10px 10px 0;
+  }
+  .subq .qtitle { font-size: 15.5px; }
+  .hidden { display: none; }
+
+  .submit-wrap { text-align: center; margin-top: 22px; }
+  #submit-btn {
+    background: var(--um-blue); color: #fff; font: inherit; font-weight: 700; font-size: 17px;
+    border: 0; border-radius: 12px; padding: 14px 46px; cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,39,76,.35);
+  }
+  #submit-btn:hover:not(:disabled) { background: var(--um-blue-2); }
+  #submit-btn:disabled { background: #9aa8b6; cursor: not-allowed; box-shadow: none; }
+  .submit-note { font-size: 13.5px; color: var(--muted); margin-top: 9px; }
+
+  #thanks { text-align: center; padding: 48px 18px; }
+  #thanks h2 { color: var(--um-blue); font-size: 24px; margin: 0 0 8px; }
+  #thanks p { color: var(--muted); }
+  .check-big { font-size: 52px; color: var(--green); line-height: 1; margin-bottom: 10px; }
+
+  footer { text-align: center; font-size: 12.5px; color: var(--muted); padding: 0 16px 40px; }
+</style>
+</head>
+<body>
+
+<div class="draft-banner" id="draft-banner">DRAFT — planning team review copy · responses are not recorded</div>
+
+<header>
+  <div class="hwrap">
+    <div class="brand">Michigan Medicine &middot; Department of Urology</div>
+    <h1>AI &amp; Our Faculty: 10 Quick Questions</h1>
+    <p class="lede">Help us plan the AI session at the faculty retreat. Mostly checkboxes,
+    about <b>3 minutes</b>. Responses are <b>anonymous</b>.</p>
+  </div>
+</header>
+
+<main id="survey">
+
+  <!-- Q1 -->
+  <div class="card">
+    <p class="qtitle"><span class="qnum">1</span>How often do you use AI tools of any kind? <span class="req">*</span></p>
+    <p class="qhint">Work or personal — ChatGPT, ambient scribes, anything.</p>
+    <div class="opts row" id="q-freq">
+      <label><input type="radio" name="freq" value="daily"><span class="lbl">Daily</span></label>
+      <label><input type="radio" name="freq" value="weekly"><span class="lbl">A few times a week</span></label>
+      <label><input type="radio" name="freq" value="monthly"><span class="lbl">A few times a month</span></label>
+      <label><input type="radio" name="freq" value="rarely"><span class="lbl">Rarely</span></label>
+      <label><input type="radio" name="freq" value="never"><span class="lbl">Never tried them</span></label>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="card">
+    <p class="qtitle"><span class="qnum">2</span>Which AI tools have you used?</p>
+    <p class="qhint">Check all that apply.</p>
+    <div class="opts two">
+      <label><input type="checkbox" name="tool_chatgpt"><span class="lbl">ChatGPT (OpenAI)</span></label>
+      <label><input type="checkbox" name="tool_claude"><span class="lbl">Claude (Anthropic)</span></label>
+      <label><input type="checkbox" name="tool_gemini"><span class="lbl">Gemini (Google)</span></label>
+      <label><input type="checkbox" name="tool_copilot"><span class="lbl">Copilot (Microsoft)</span></label>
+      <label><input type="checkbox" name="tool_umgpt"><span class="lbl">U-M GPT / U-M Maizey</span></label>
+      <label><input type="checkbox" name="tool_perplexity"><span class="lbl">Perplexity</span></label>
+      <label><input type="checkbox" name="tool_openevidence"><span class="lbl">OpenEvidence / UpToDate AI</span></label>
+      <label><input type="checkbox" name="tool_emr"><span class="lbl">AI built into the EMR</span></label>
+      <label><input type="checkbox" name="tool_scribe"><span class="lbl">Ambient scribe product</span></label>
+      <label><input type="checkbox" name="tool_none"><span class="lbl">None</span></label>
+    </div>
+    <div class="otherline" style="margin-top:8px">
+      <label style="display:flex;align-items:center;gap:9px;flex:none;border:0;padding:0">
+        <input type="checkbox" name="tool_other" style="width:20px;height:20px;accent-color:var(--um-blue)"><span class="lbl">Other:</span>
+      </label>
+      <input type="text" name="tool_other_text" placeholder="tool name(s)">
+    </div>
+  </div>
+
+  <!-- Q3 gate: clinical -->
+  <div class="card">
+    <p class="qtitle"><span class="qnum">3</span>Do you use AI in your clinical work? <span class="req">*</span></p>
+    <div class="opts row" id="q-clinical">
+      <label><input type="radio" name="clinical_use" value="yes"><span class="lbl">Yes</span></label>
+      <label><input type="radio" name="clinical_use" value="no"><span class="lbl">No</span></label>
+      <label><input type="radio" name="clinical_use" value="na"><span class="lbl">N/A — not clinically active</span></label>
+    </div>
+
+    <div class="subq hidden" id="clinical-detail">
+      <p class="qtitle">How are you using it clinically?</p>
+      <p class="qhint">Check all that apply.</p>
+      <div class="opts two">
+        <label><input type="checkbox" name="c_scribe"><span class="lbl">Ambient scribe / note generation</span></label>
+        <label><input type="checkbox" name="c_inbasket"><span class="lbl">Drafting In Basket replies</span></label>
+        <label><input type="checkbox" name="c_summarize"><span class="lbl">Summarizing charts / records</span></label>
+        <label><input type="checkbox" name="c_pt_ed"><span class="lbl">Patient education materials</span></label>
+        <label><input type="checkbox" name="c_lookup"><span class="lbl">Literature / guideline lookup</span></label>
+        <label><input type="checkbox" name="c_letters"><span class="lbl">Letters, appeals, prior auth</span></label>
+        <label><input type="checkbox" name="c_coding"><span class="lbl">Coding &amp; billing support</span></label>
+      </div>
+      <div class="otherline" style="margin-top:8px">
+        <label style="display:flex;align-items:center;gap:9px;flex:none;border:0;padding:0">
+          <input type="checkbox" name="c_other" style="width:20px;height:20px;accent-color:var(--um-blue)"><span class="lbl">Other:</span>
+        </label>
+        <input type="text" name="c_other_text">
+      </div>
+    </div>
+
+    <div class="subq hidden" id="ambient-q">
+      <p class="qtitle">Are you using ambient AI documentation?</p>
+      <div class="opts row" id="q-amb">
+        <label><input type="radio" name="amb_status" value="routinely"><span class="lbl">Routinely</span></label>
+        <label><input type="radio" name="amb_status" value="occasionally"><span class="lbl">Occasionally</span></label>
+        <label><input type="radio" name="amb_status" value="stopped"><span class="lbl">Tried it, stopped</span></label>
+        <label><input type="radio" name="amb_status" value="never"><span class="lbl">Never used it</span></label>
+      </div>
+      <div class="hidden" id="ambient-why" style="margin-top:10px">
+        <p class="qhint" style="margin-bottom:8px"><b>Why not?</b> Check all that apply.</p>
+        <div class="opts two">
+          <label><input type="checkbox" name="amb_notavail"><span class="lbl">Not available to me</span></label>
+          <label><input type="checkbox" name="amb_unaware"><span class="lbl">Didn't know it was an option</span></label>
+          <label><input type="checkbox" name="amb_quality"><span class="lbl">Note quality / accuracy</span></label>
+          <label><input type="checkbox" name="amb_editing"><span class="lbl">More editing than it saves</span></label>
+          <label><input type="checkbox" name="amb_privacy"><span class="lbl">Privacy / consent concerns</span></label>
+          <label><input type="checkbox" name="amb_workflow"><span class="lbl">Doesn't fit my workflow</span></label>
+          <label><input type="checkbox" name="amb_notyet"><span class="lbl">Haven't gotten around to it</span></label>
+        </div>
+        <div class="otherline" style="margin-top:8px">
+          <label style="display:flex;align-items:center;gap:9px;flex:none;border:0;padding:0">
+            <input type="checkbox" name="amb_other" style="width:20px;height:20px;accent-color:var(--um-blue)"><span class="lbl">Other:</span>
+          </label>
+          <input type="text" name="amb_other_text">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 gate: research -->
+  <div class="card">
+    <p class="qtitle"><span class="qnum">4</span>Do you use AI in research or academic work? <span class="req">*</span></p>
+    <div class="opts row" id="q-research">
+      <label><input type="radio" name="research_use" value="yes"><span class="lbl">Yes</span></label>
+      <label><input type="radio" name="research_use" value="no"><span class="lbl">No</span></label>
+    </div>
+
+    <div class="subq hidden" id="research-detail">
+      <p class="qtitle">How are you using it?</p>
+      <p class="qhint">Check all that apply.</p>
+      <div class="opts two">
+        <label><input type="checkbox" name="r_lit"><span class="lbl">Literature search / summarizing</span></label>
+        <label><input type="checkbox" name="r_writing"><span class="lbl">Drafting / editing manuscripts</span></label>
+        <label><input type="checkbox" name="r_grants"><span class="lbl">Grant writing</span></label>
+        <label><input type="checkbox" name="r_stats"><span class="lbl">Statistical analysis or coding</span></label>
+        <label><input type="checkbox" name="r_data"><span class="lbl">Data extraction / chart review</span></label>
+        <label><input type="checkbox" name="r_figures"><span class="lbl">Figures, tables, slides</span></label>
+        <label><input type="checkbox" name="r_teaching"><span class="lbl">Teaching materials / lectures</span></label>
+      </div>
+      <div class="otherline" style="margin-top:8px">
+        <label style="display:flex;align-items:center;gap:9px;flex:none;border:0;padding:0">
+          <input type="checkbox" name="r_other" style="width:20px;height:20px;accent-color:var(--um-blue)"><span class="lbl">Other:</span>
+        </label>
+        <input type="text" name="r_other_text">
+      </div>
+    </div>
+  </div>
+
+  <!-- Q5 comfort -->
+  <div class="card">
+    <p class="qtitle"><span class="qnum">5</span>Which of these are you comfortable having AI do for you?</p>
+    <p class="qhint">From an ethical standpoint — whether or not you do it today. Check all that apply.</p>
+    <div class="opts two">
+      <label><input type="checkbox" name="ok_litreview"><span class="lbl">Literature review</span></label>
+      <label><input type="checkbox" name="ok_stats"><span class="lbl">Statistical analysis</span></label>
+      <label><input type="checkbox" name="ok_manuscript"><span class="lbl">Writing a manuscript draft</span></label>
+      <label><input type="checkbox" name="ok_encounter"><span class="lbl">Summarizing a prior clinical encounter</span></label>
+      <label><input type="checkbox" name="ok_note"><span class="lbl">Drafting a clinical note</span></label>
+      <label><input type="checkbox" name="ok_readmsg"><span class="lbl">Reading patient messages</span></label>
+      <label><input type="checkbox" name="ok_draftmsg"><span class="lbl">Drafting replies to patient messages</span></label>
+      <label><input type="checkbox" name="ok_none"><span class="lbl">None of these</span></label>
+    </div>
+  </div>
+
+  <!-- Q6 concerns -->
+  <div class="card">
+    <p class="qtitle"><span class="qnum">6</span>What concerns do you have about AI use?</p>
+    <p class="qhint">The <i>should-we</i> question — ethical and professional concerns. Check all that apply.</p>
+    <div class="opts two">
+      <label><input type="checkbox" name="concern_privacy"><span class="lbl">Patient privacy / PHI exposure</span></label>
+      <label><input type="checkbox" name="concern_accuracy"><span class="lbl">Accuracy / made-up output</span></label>
+      <label><input type="checkbox" name="concern_bias"><span class="lbl">Bias &amp; health equity</span></label>
+      <label><input type="checkbox" name="concern_skills"><span class="lbl">Losing my own skills or voice</span></label>
+      <label><input type="checkbox" name="concern_integrity"><span class="lbl">Academic integrity / authorship</span></label>
+      <label><input type="checkbox" name="concern_legal"><span class="lbl">Medicolegal liability</span></label>
+      <label><input type="checkbox" name="concern_relationship"><span class="lbl">The doctor&ndash;patient relationship</span></label>
+      <label><input type="checkbox" name="concern_trainees"><span class="lbl">Impact on trainee learning</span></label>
+      <label><input type="checkbox" name="concern_none"><span class="lbl">No significant concerns</span></label>
+    </div>
+    <div class="otherline" style="margin-top:8px">
+      <label style="display:flex;align-items:center;gap:9px;flex:none;border:0;padding:0">
+        <input type="checkbox" name="concern_other" style="width:20px;height:20px;accent-color:var(--um-blue)"><span class="lbl">Other:</span>
+      </label>
+      <input type="text" name="concern_other_text">
+    </div>
+  </div>
+
+  <!-- Q7 barriers -->
+  <div class="card">
+    <p class="qtitle"><span class="qnum">7</span>What's holding you back from using AI (more)?</p>
+    <p class="qhint">The <i>how-do-I</i> question — practical barriers. Check all that apply.</p>
+    <div class="opts two">
+      <label><input type="checkbox" name="barrier_start"><span class="lbl">Don't know where to start</span></label>
+      <label><input type="checkbox" name="barrier_time"><span class="lbl">No time to learn it</span></label>
+      <label><input type="checkbox" name="barrier_policy"><span class="lbl">Unclear what I'm allowed to use</span></label>
+      <label><input type="checkbox" name="barrier_emr"><span class="lbl">No connection to the EMR / my workflow</span></label>
+      <label><input type="checkbox" name="barrier_tech"><span class="lbl">Technical setup feels intimidating</span></label>
+      <label><input type="checkbox" name="barrier_cost"><span class="lbl">Cost</span></label>
+      <label><input type="checkbox" name="barrier_value"><span class="lbl">Not convinced it's worth it</span></label>
+      <label><input type="checkbox" name="barrier_none"><span class="lbl">Nothing is holding me back</span></label>
+    </div>
+    <div class="otherline" style="margin-top:8px">
+      <label style="display:flex;align-items:center;gap:9px;flex:none;border:0;padding:0">
+        <input type="checkbox" name="barrier_other" style="width:20px;height:20px;accent-color:var(--um-blue)"><span class="lbl">Other:</span>
+      </label>
+      <input type="text" name="barrier_other_text">
+    </div>
+  </div>
+
+  <!-- Q8 disclosure -->
+  <div class="card">
+    <p class="qtitle"><span class="qnum">8</span>Where should AI use be disclosed?</p>
+    <p class="qhint">Check every context where you think disclosure should be expected.</p>
+    <div class="opts two">
+      <label><input type="checkbox" name="disclose_notes"><span class="lbl">Clinical notes</span></label>
+      <label><input type="checkbox" name="disclose_messages"><span class="lbl">Messages to patients</span></label>
+      <label><input type="checkbox" name="disclose_manuscripts"><span class="lbl">Manuscripts / publications</span></label>
+      <label><input type="checkbox" name="disclose_litreview"><span class="lbl">Literature review &amp; research prep</span></label>
+      <label><input type="checkbox" name="disclose_grants"><span class="lbl">Grant applications</span></label>
+      <label><input type="checkbox" name="disclose_slides"><span class="lbl">Slides &amp; teaching materials</span></label>
+      <label><input type="checkbox" name="disclose_images"><span class="lbl">Figures &amp; image creation</span></label>
+      <label><input type="checkbox" name="disclose_none"><span class="lbl">Nowhere — it's a tool, like spellcheck</span></label>
+      <label><input type="checkbox" name="disclose_unsure"><span class="lbl">Not sure — I'd like guidance on this</span></label>
+    </div>
+  </div>
+
+  <!-- Q9 retreat wants -->
+  <div class="card">
+    <p class="qtitle"><span class="qnum">9</span>What do you want from the retreat session?</p>
+    <p class="qhint">Check all that apply — this directly sets the agenda.</p>
+    <div class="opts two">
+      <label><input type="checkbox" name="want_basics"><span class="lbl">Getting-started basics, with hands-on help</span></label>
+      <label><input type="checkbox" name="want_demos"><span class="lbl">Live demos I could use right away</span></label>
+      <label><input type="checkbox" name="want_colleagues"><span class="lbl">How colleagues here are already using AI</span></label>
+      <label><input type="checkbox" name="want_policy"><span class="lbl">Policy, ethics &amp; disclosure guidance</span></label>
+      <label><input type="checkbox" name="want_clindoc"><span class="lbl">Clinical documentation &amp; ambient AI</span></label>
+      <label><input type="checkbox" name="want_research"><span class="lbl">Research &amp; writing uses</span></label>
+      <label><input type="checkbox" name="want_custom"><span class="lbl">Building custom tools / automations</span></label>
+    </div>
+    <div class="otherline" style="margin-top:8px">
+      <label style="display:flex;align-items:center;gap:9px;flex:none;border:0;padding:0">
+        <input type="checkbox" name="want_other" style="width:20px;height:20px;accent-color:var(--um-blue)"><span class="lbl">Other:</span>
+      </label>
+      <input type="text" name="want_other_text">
+    </div>
+  </div>
+
+  <!-- Q10 free text -->
+  <div class="card">
+    <p class="qtitle"><span class="qnum">10</span>Optional — but the most useful thing you can give us</p>
+    <p class="qhint">Describe a real problem in your work that AI might help with, or a way you're
+    already using AI that colleagues might want to hear about. We may use these
+    (anonymously) as worked examples at the retreat.</p>
+    <textarea name="freetext" placeholder="e.g., 'I spend an hour a night on In Basket…' or 'I built a prompt that writes my clinic letters…'"></textarea>
+  </div>
+
+  <div class="submit-wrap">
+    <button id="submit-btn" disabled>Submit</button>
+    <p class="submit-note" id="submit-note">Answer questions 1, 3, and 4 to submit.</p>
+  </div>
+
+</main>
+
+<div id="thanks" class="hidden">
+  <div class="check-big">&#10003;</div>
+  <h2>Thank you!</h2>
+  <p>Your response has been recorded. See you at the retreat.</p>
+</div>
+
+<footer>Department of Urology faculty retreat planning &middot; responses are anonymous and reported in aggregate.</footer>
+
+<script>
+"use strict";
+
+// ====== CONFIG ======
+var DRAFT_MODE  = true;   // true: draft banner shown, submissions NOT posted
+var WEBHOOK_URL = "";     // paste Power Automate HTTP trigger URL here for production
+
+// Column manifest — every payload always includes ALL of these keys (Power Automate
+// schema validation rejects submissions with missing properties).
+var COLUMNS = [
+  "submitted_at","freq",
+  "tool_chatgpt","tool_claude","tool_gemini","tool_copilot","tool_umgpt","tool_perplexity",
+  "tool_openevidence","tool_emr","tool_scribe","tool_none","tool_other","tool_other_text",
+  "clinical_use",
+  "c_scribe","c_inbasket","c_summarize","c_pt_ed","c_lookup","c_letters","c_coding","c_other","c_other_text",
+  "amb_status","amb_notavail","amb_unaware","amb_quality","amb_editing","amb_privacy",
+  "amb_workflow","amb_notyet","amb_other","amb_other_text",
+  "research_use",
+  "r_lit","r_writing","r_grants","r_stats","r_data","r_figures","r_teaching","r_other","r_other_text",
+  "ok_litreview","ok_stats","ok_manuscript","ok_encounter","ok_note","ok_readmsg","ok_draftmsg","ok_none",
+  "concern_privacy","concern_accuracy","concern_bias","concern_skills","concern_integrity",
+  "concern_legal","concern_relationship","concern_trainees","concern_none","concern_other","concern_other_text",
+  "barrier_start","barrier_time","barrier_policy","barrier_emr","barrier_tech","barrier_cost",
+  "barrier_value","barrier_none","barrier_other","barrier_other_text",
+  "disclose_notes","disclose_messages","disclose_manuscripts","disclose_litreview","disclose_grants",
+  "disclose_slides","disclose_images","disclose_none","disclose_unsure",
+  "want_basics","want_demos","want_colleagues","want_policy","want_clindoc","want_research",
+  "want_custom","want_other","want_other_text",
+  "freetext"
+];
+
+function $(sel){ return document.querySelector(sel); }
+function radioVal(name){
+  var el = document.querySelector('input[name="' + name + '"]:checked');
+  return el ? el.value : "";
+}
+
+// ---- gating ----
+function refreshGates(){
+  var clin = radioVal("clinical_use");
+  $("#clinical-detail").classList.toggle("hidden", clin !== "yes");
+  // ambient question shows for anyone clinically active (yes or no to AI use)
+  $("#ambient-q").classList.toggle("hidden", !(clin === "yes" || clin === "no"));
+  var amb = radioVal("amb_status");
+  $("#ambient-why").classList.toggle("hidden", !(amb === "stopped" || amb === "never"));
+  $("#research-detail").classList.toggle("hidden", radioVal("research_use") !== "yes");
+  refreshSubmit();
+}
+function refreshSubmit(){
+  var ready = radioVal("freq") && radioVal("clinical_use") && radioVal("research_use");
+  $("#submit-btn").disabled = !ready;
+  $("#submit-note").textContent = ready
+    ? (DRAFT_MODE ? "Draft mode — nothing will be recorded." : "That's it — thank you!")
+    : "Answer questions 1, 3, and 4 to submit.";
+}
+document.querySelectorAll('input[type=radio]').forEach(function(r){
+  r.addEventListener("change", refreshGates);
+});
+
+// ---- payload ----
+function buildPayload(){
+  var flat = {};
+  COLUMNS.forEach(function(k){ flat[k] = ""; });
+  flat.submitted_at = new Date().toISOString();
+
+  document.querySelectorAll("input[type=checkbox]").forEach(function(cb){
+    if (cb.checked && cb.name) flat[cb.name] = "1";
+  });
+  ["freq","clinical_use","amb_status","research_use"].forEach(function(n){
+    flat[n] = radioVal(n);
+  });
+  document.querySelectorAll("input[type=text], textarea").forEach(function(t){
+    if (t.name) flat[t.name] = t.value.trim();
+  });
+
+  // Zero out gated sections that don't apply, so stray clicks can't leak through
+  var clin = radioVal("clinical_use");
+  if (clin !== "yes"){
+    ["c_scribe","c_inbasket","c_summarize","c_pt_ed","c_lookup","c_letters","c_coding","c_other","c_other_text"]
+      .forEach(function(k){ flat[k] = ""; });
+  }
+  if (clin === "na"){
+    ["amb_status","amb_notavail","amb_unaware","amb_quality","amb_editing","amb_privacy",
+     "amb_workflow","amb_notyet","amb_other","amb_other_text"].forEach(function(k){ flat[k] = ""; });
+  }
+  var amb = radioVal("amb_status");
+  if (!(amb === "stopped" || amb === "never")){
+    ["amb_notavail","amb_unaware","amb_quality","amb_editing","amb_privacy",
+     "amb_workflow","amb_notyet","amb_other","amb_other_text"].forEach(function(k){ flat[k] = ""; });
+  }
+  if (radioVal("research_use") !== "yes"){
+    ["r_lit","r_writing","r_grants","r_stats","r_data","r_figures","r_teaching","r_other","r_other_text"]
+      .forEach(function(k){ flat[k] = ""; });
+  }
+  return flat;
+}
+
+// ---- submit ----
+$("#submit-btn").addEventListener("click", function(){
+  var btn = $("#submit-btn");
+  btn.disabled = true;
+  btn.textContent = "Submitting…";
+  var payload = buildPayload();
+
+  function done(){
+    $("#survey").classList.add("hidden");
+    $("#thanks").classList.remove("hidden");
+    if (DRAFT_MODE){
+      $("#thanks").querySelector("p").textContent =
+        "Draft mode — this response was NOT recorded. (Payload logged to console for QA.)";
+      console.log("DRAFT payload:", JSON.stringify(payload, null, 2));
+    }
+    window.scrollTo(0, 0);
+  }
+  function fail(){
+    btn.disabled = false;
+    btn.textContent = "Submit";
+    alert("Something went wrong submitting your response. Please try again, or email Rod Dunn.");
+  }
+
+  if (DRAFT_MODE || !WEBHOOK_URL){ done(); return; }
+
+  fetch(WEBHOOK_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  }).then(function(resp){ resp.ok ? done() : fail(); })
+    .catch(fail);
+});
+
+if (!DRAFT_MODE) $("#draft-banner").style.display = "none";
+refreshGates();
+</script>
+</body>
+</html>
