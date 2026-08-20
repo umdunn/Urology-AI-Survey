@@ -8,7 +8,7 @@ Same architecture as the Block 40 call sign-up (GitHub Pages static form → Pow
 |---|---|
 | `index.html` | The survey. Self-contained; no dependencies. |
 | `sample_payload.json` | Paste into Power Automate "Use sample payload to generate schema". |
-| `Urology_AI_Survey_Responses.xlsx` | Upload to SharePoint. Named table `Responses`, 92 columns, 130% zoom. |
+| `Urology_AI_Survey_Responses.xlsx` | Upload to SharePoint. Named table `Responses`, 93 columns, 130% zoom. |
 | `SETUP.md` | This guide. |
 
 ## Draft → production switch
@@ -25,24 +25,27 @@ var WEBHOOK_URL = "";     // Power Automate HTTP trigger URL
 - **Faculty launch:** set `DRAFT_MODE = false` and paste the webhook URL. Banner
   disappears automatically.
 
-## Launch checklist
+## Production state (as of 8/20/2026)
 
-1. **SharePoint:** upload `Urology_AI_Survey_Responses.xlsx` to the same SharePoint
-   library used for Block 40.
-2. **Power Automate** (Premium license, same as Block 40):
-   - Instant cloud flow → trigger "When an HTTP request is received"
-   - Trigger ⋯ → Settings → **Concurrency Control ON, Degree of Parallelism = 1**
-   - "Use sample payload to generate schema" → paste contents of `sample_payload.json`
-   - Action: Excel Online (Business) → "Add a row into a table" → map all 92 fields
-     (tedious but one-time; every payload key matches its column name exactly)
-   - Action: "Send an email (V2)" → notify Rod on each submission.
-     Suggested subject: `AI survey response received` (responses are anonymous — no name in subject)
-   - Save; copy the HTTP URL into `WEBHOOK_URL`
-3. **GitHub Pages:** push to the hosting repo (decision pending — new repo vs.
-   subdirectory of `umdunn/Urology-Call`). Wait ~1 min for redeploy.
-4. **End-to-end test:** submit once through the live page, verify the row lands in
-   Excel and the email arrives, then delete the test row.
-5. **Send faculty email** with the link. Reminder 2 days before the close date.
+- **Live URL:** https://umdunn.github.io/Urology-AI-Survey/ (repo `umdunn/Urology-AI-Survey`)
+- **Responses land in:** `Urology_AI_Survey_Responses.xlsx` in Rod's Michigan Medicine
+  OneDrive (umhealth-my.sharepoint.com, My files root), table `Responses`
+- **Flow:** "AI Survey Response Intake" in Power Automate (Michigan Medicine tenant),
+  HTTP trigger (Anyone) → concurrency 1 → Excel "Add a row into a table" with all 93
+  columns mapped → email notification to rldunn@med.umich.edu per submission
+- The 93 field mappings were injected by exporting the flow package, editing
+  `definition.json` (`"item/<col>": "@triggerBody()?['<col>']"`), and re-importing
+  with Update — the designer's code view is read-only on this tenant, and Office
+  Scripts wouldn't load
+- `AI-Survey-Response-Intake_MAPPED.zip` in this folder is the imported package (keep
+  as backup; re-import it if the flow is ever damaged)
+
+## If the survey needs edits after launch
+
+1. Edit `index.html`, keeping `WEBHOOK_URL` and `DRAFT_MODE = false` intact
+2. If columns change: regenerate `sample_payload.json` + the xlsx template, replace the
+   OneDrive file, update the trigger schema, and redo the export/edit/import cycle
+3. Upload changed files to the repo via GitHub web UI; Pages redeploys in ~1 min
 
 ## Design decisions (from team feedback, Aug 2026)
 
@@ -57,5 +60,5 @@ var WEBHOOK_URL = "";     // Power Automate HTTP trigger URL
   research detail only if research user (Kristian's screening idea)
 - **"Other" options** on concerns and most check-alls (Chrouser)
 - **Anonymous** — no name field, so no dedupe possible; acceptable for planning data
-- Payload always includes all 92 columns (empty strings) — Power Automate schema
+- Payload always includes all 93 columns (empty strings) — Power Automate schema
   validation rejects submissions with missing keys (Block 40 lesson #1)

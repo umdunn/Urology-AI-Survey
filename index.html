@@ -230,9 +230,10 @@
       <p class="qhint">Check all that apply.</p>
       <div class="opts two">
         <label><input type="checkbox" name="r_lit"><span class="lbl">Literature search / summarizing</span></label>
-        <label><input type="checkbox" name="r_writing"><span class="lbl">Drafting / editing manuscripts</span></label>
-        <label><input type="checkbox" name="r_grants"><span class="lbl">Grant writing</span></label>
-        <label><input type="checkbox" name="r_stats"><span class="lbl">Statistical analysis or coding</span></label>
+        <label><input type="checkbox" name="r_draft"><span class="lbl">Drafting new text (manuscripts, grants)</span></label>
+        <label><input type="checkbox" name="r_edit"><span class="lbl">Editing / feedback on my own writing</span></label>
+        <label><input type="checkbox" name="r_stats_gen"><span class="lbl">Generating statistical code or analyses</span></label>
+        <label><input type="checkbox" name="r_stats_refine"><span class="lbl">Refining my code / statistical plan</span></label>
         <label><input type="checkbox" name="r_data"><span class="lbl">Data extraction / chart review</span></label>
         <label><input type="checkbox" name="r_figures"><span class="lbl">Figures, tables, slides</span></label>
         <label><input type="checkbox" name="r_teaching"><span class="lbl">Teaching materials / lectures</span></label>
@@ -319,7 +320,7 @@
       <label><input type="checkbox" name="disclose_grants"><span class="lbl">Grant applications</span></label>
       <label><input type="checkbox" name="disclose_slides"><span class="lbl">Slides &amp; teaching materials</span></label>
       <label><input type="checkbox" name="disclose_images"><span class="lbl">Figures &amp; image creation</span></label>
-      <label><input type="checkbox" name="disclose_none"><span class="lbl">Nowhere — it's a tool, like spellcheck</span></label>
+      <label><input type="checkbox" name="disclose_none"><span class="lbl">Nowhere — no disclosure needed</span></label>
       <label><input type="checkbox" name="disclose_unsure"><span class="lbl">Not sure — I'd like guidance on this</span></label>
     </div>
   </div>
@@ -373,8 +374,8 @@
 "use strict";
 
 // ====== CONFIG ======
-var DRAFT_MODE  = true;   // true: draft banner shown, submissions NOT posted
-var WEBHOOK_URL = "";     // paste Power Automate HTTP trigger URL here for production
+var DRAFT_MODE  = false;  // true: draft banner shown, submissions NOT posted
+var WEBHOOK_URL = "https://default1f41d613d3a14ead918d2a25b10de3.30.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/21/workflows/5c46b02a96b34576936ab22ce78950d6/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2ILxnnuhnOeBo0Yy0VUViSEmRxoreQZzUChyVczT1f8";
 
 // Column manifest — every payload always includes ALL of these keys (Power Automate
 // schema validation rejects submissions with missing properties).
@@ -387,7 +388,7 @@ var COLUMNS = [
   "amb_status","amb_notavail","amb_unaware","amb_quality","amb_editing","amb_privacy",
   "amb_workflow","amb_notyet","amb_other","amb_other_text",
   "research_use",
-  "r_lit","r_writing","r_grants","r_stats","r_data","r_figures","r_teaching","r_other","r_other_text",
+  "r_lit","r_draft","r_edit","r_stats_gen","r_stats_refine","r_data","r_figures","r_teaching","r_other","r_other_text",
   "ok_litreview","ok_stats","ok_manuscript","ok_encounter","ok_note","ok_readmsg","ok_draftmsg","ok_none",
   "concern_privacy","concern_accuracy","concern_bias","concern_skills","concern_integrity",
   "concern_legal","concern_relationship","concern_trainees","concern_none","concern_other","concern_other_text",
@@ -460,7 +461,7 @@ function buildPayload(){
      "amb_workflow","amb_notyet","amb_other","amb_other_text"].forEach(function(k){ flat[k] = ""; });
   }
   if (radioVal("research_use") !== "yes"){
-    ["r_lit","r_writing","r_grants","r_stats","r_data","r_figures","r_teaching","r_other","r_other_text"]
+    ["r_lit","r_draft","r_edit","r_stats_gen","r_stats_refine","r_data","r_figures","r_teaching","r_other","r_other_text"]
       .forEach(function(k){ flat[k] = ""; });
   }
   return flat;
